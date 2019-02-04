@@ -2,9 +2,8 @@
 
 ## Integration Steps
 
-1. Extract `react-native-freshchat-sdk` and place it inside `node_module` folder in your project
-2. Add `"react-native-freshchat-sdk": "^0.5.6"` under `dependencies` in project `package.json`
-3. Run `react-native link` on you project root directory
+1. `yarn add react-native-freshchat-sdk-latest` OR `npm install react-native-freshchat-sdk-latest --save`
+2. Run `react-native link` on you project root directory
 
 ### iOS setup steps
 
@@ -12,9 +11,9 @@
 2. Add an entry for FreshchatSDK as shown below in `Podfile`
     ```
     target 'ProjectName' do
-    
+
         pod 'FreshchatSDK', :path=> '../node_modules/react-native-freshchat-sdk/ios/FreshchatSDK.podspec'
-    
+
     end
     ```
 3. Run `pod install` from ios directory
@@ -23,7 +22,7 @@ Follow how to manually link a library here [https://facebook.github.io/react-nat
 
 ### Android setup steps
 
-Add `maven { url "https://jitpack.io” }` to you project level build.gradle as below 
+Add `maven { url "https://jitpack.io” }` to you project level build.gradle as below
 
     allprojects {
         repositories {
@@ -47,7 +46,7 @@ Add `maven { url "https://jitpack.io” }` to you project level build.gradle as 
         FreshchatMessage,
         FreshchatNotificationConfig
         } from 'react-native-freshchat-sdk';
-        
+
 ### Initialise SDK
 
     var freshchatConfig = new FreshchatConfig('YOUR_APP_ID', 'YOUR_APP_KEY');
@@ -86,7 +85,7 @@ Add `maven { url "https://jitpack.io” }` to you project level build.gradle as 
             console.log(data);
         });
 
- 
+
 ### Listen to changes to unread message count
 
     Freshchat.addEventListener(
@@ -96,7 +95,7 @@ Add `maven { url "https://jitpack.io” }` to you project level build.gradle as 
                     Freshchat.getUnreadCountAsync((data) => {
                         var count = data.count;
                         var status = data.status;
-    
+
                         if (status) {
                             console.log("Message count: " + count);
                         } else {
@@ -105,11 +104,11 @@ Add `maven { url "https://jitpack.io” }` to you project level build.gradle as 
                     });
                 }
             );
-    
-### To stop listening from changes to unread count 
+
+### To stop listening from changes to unread count
 
     Freshchat.removeEventListeners(Freshchat.EVENT_UNREAD_MESSAGE_COUNT_CHANGED);
-    
+
 ### Get User
 
     Freshchat.getUser((user) => {
@@ -186,7 +185,7 @@ Add `maven { url "https://jitpack.io” }` to you project level build.gradle as 
     freshchatNotificationConfig.priority = FreshchatNotificationConfig.NotificationPriority.PRIORITY_HIGH;
     freshchatNotificationConfig.notificationSoundEnabled = false;
     Freshchat.setNotificationConfig(freshchatNotificationConfig);
-    
+
 ### Save device token of the user in Freshchat server
 
     Freshchat.setPushRegistrationToken(token);
@@ -194,14 +193,14 @@ Add `maven { url "https://jitpack.io” }` to you project level build.gradle as 
 ### Handle Freshchat notification when user receives it
 
     Freshchat.isFreshchatNotification(notification, (freshchatNotification) => {
-         
+
          if (freshchatNotification) {
             Freshchat.handlePushNotification(notification);
          } else {
             // handle your app notification
          }
     })
-    
+
 In iOS, Application state should be sent as part of notification payload to effectively handle notification
 
 `isActive` field should be `true` if Application state is active, `false` otherwise.
@@ -211,9 +210,9 @@ In iOS, Application state should be sent as part of notification payload to effe
     NSMutableDictionary *mutableDict = [response.notification.request.content.userInfo mutableCopy];
     BOOL isActive = [UIApplication sharedApplication].applicationState == UIApplicationStateActive;
     [mutableDict setObject:@(isActive) forKey:@"isActive"];
-    
+
 Note: If this parameter is not set, Conversations screen will not open when app is inactive or in background. Instead In-App notification will be shown.
-   
+
 ### Transform PushNotificationIOS Payload To Native Payload
 
     const notificationPayload = Freshchat.transformPushNotificationIOSPayloadToNativePayload(notification);
@@ -222,14 +221,14 @@ If you want to handle push notifications in Native layer. You can follow the bel
 
 ### iOS
 
-#### Add Import 
+#### Add Import
 
     import "FreshchatSDK.h"
-    
+
 #### Save device token of the user in Freshchat server
 
     [[FreshchatSDK sharedInstance]setPushRegistrationToken:deviceToken];
-    
+
 #### Handle Freshchat notification when user receives it
 
     if ([[FreshchatSDK sharedInstance]isFreshchatNotification:userInfo]) {
@@ -237,13 +236,13 @@ If you want to handle push notifications in Native layer. You can follow the bel
     } else {
         // handle your app notification
     }
-    
+
 ### Android
-    
+
 #### Save device token of the user in Freshchat server
 
     Freshchat.getInstance(context).setPushRegistrationToken(token);
-    
+
 #### Handle Freshchat notification when user receives it
 
     if (Freshchat.isFreshchatNotification(message)) {
@@ -251,7 +250,7 @@ If you want to handle push notifications in Native layer. You can follow the bel
     } else {
         // handle your app notification       
     }
-    
+
 ### Listen to User Interactions
 
 1. Add event listener for Freshchat.EVENT_USER_INTERACTED event. When user interacts with app, this event will be triggered.
@@ -260,10 +259,10 @@ If you want to handle push notifications in Native layer. You can follow the bel
                     Freshchat.EVENT_USER_INTERACTED,
                     userInteractionHandler
                 );
-               
+
 2. iOS Specific configuration
    - In AppDelegate.h, Use `RNFreshchatWindow` instead of `UIWindow`, which extends `UIWindow`
-   
+
         ```
         #import "RNFreshchatSdk.h"
         @property (nonatomic, strong) RNFreshchatWindow *window;
@@ -277,14 +276,14 @@ If you want to handle push notifications in Native layer. You can follow the bel
             }
             ```
 3. To remove event listener, use the below code
-    
+
         Freshchat.removeEventListeners(Freshchat.EVENT_USER_INTERACTED);
 
 ## JWT integration documentation
 
 1. To create user with reference_id and to restore existing user, call `restoreUserWithIdToken` with JWT token.
 2. To update user properties, create user without reference_id or to update JWT token, call `setUserWithIdToken` with JWT token.
-3. `getUserIdTokenStatus` return current status of the JWT token 
+3. `getUserIdTokenStatus` return current status of the JWT token
 4. `getFreshchatUserId` generate and return user alias
 5. Use `Freshchat.FRESHCHAT_EVENTS` event to listen to user interactions like SCREEN_TRANSITIONS and NEW_MESSAGE.
 
@@ -312,13 +311,13 @@ JWT Token will be in any one of the below 5 states
             var status = data.user_id_token_status;
             console.log('FRESHCHAT_EVENTS: state - ', status);
         });
-        
+
 ### Get Alias
 
     Freshchat.getFreshchatUserId((alias) => {
             console.log('Alias - ', alias);
         });
-        
+
 ## Event
 
 ### User Actions
@@ -329,7 +328,7 @@ Adding Listener
                 Freshchat.FRESHCHAT_EVENTS,
                 userActionsEventHandler
             );
-            
+
 Handling when event triggered
 
     const userActionsEventHandler = (actionData) => {
@@ -350,13 +349,13 @@ Adding listener
                 Freshchat.EVENT_EXTERNAL_LINK_CLICKED,
                 openLinkHandler
             );
-            
+
 Handling when event triggered
 
     const openLinkHandler = (data) => {
         console.log("link - ", data.url);
     };
-    
+
 ### Override Notification Click Listener
 
     Freshchat.addEventListener(
@@ -369,13 +368,13 @@ Handling when event triggered
             // }
         }
     );
-    
+
 When app is in killed state and SDK screen is opened directly due to notifications, `activityToLaunchOnFinish` will be launched when user clicks back button from SDK screen.
 
 Set `overrideNotificationClickListener` to `true` when you want to override notification click event in Android.
 
 Configure FreshchatNotificationConfig as follows.
- 
+
     var freshchatNotificationConfig = new FreshchatNotificationConfig();
     freshchatNotificationConfig.priority = FreshchatNotificationConfig.NotificationPriority.PRIORITY_HIGH;
     freshchatNotificationConfig.notificationSoundEnabled = false;
