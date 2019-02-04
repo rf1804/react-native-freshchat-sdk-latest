@@ -12,7 +12,7 @@
     ```
     target 'ProjectName' do
 
-        pod 'FreshchatSDK', :path=> '../node_modules/react-native-freshchat-sdk/ios/FreshchatSDK.podspec'
+        pod 'FreshchatSDK', :path=> '../node_modules/react-native-freshchat-sdk-latest/ios/FreshchatSDK.podspec'
 
     end
     ```
@@ -45,7 +45,7 @@ Add `maven { url "https://jitpack.io” }` to you project level build.gradle as 
         FreshchatUser,
         FreshchatMessage,
         FreshchatNotificationConfig
-        } from 'react-native-freshchat-sdk';
+        } from 'react-native-freshchat-sdk-latest';
 
 ### Initialise SDK
 
